@@ -10,21 +10,22 @@
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; color: var(--text); background: var(--sky); }
     .wrap { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 24px; }
     .card { width: min(1100px, 96vw); background: var(--card); border-radius: 14px; padding: 28px; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
-    .logo { display:flex; align-items:center; justify-content:center; margin-bottom: 14px; }
-    .logo-badge { width: 56px; height: 56px; border-radius: 50%; background: #86d7f7; display:flex; align-items:center; justify-content:center; margin-right: 8px; font-size: 28px; }
-    .logo-title { font-weight: 800; font-size: 28px; letter-spacing: 1px; color: #2e6f73; text-shadow: 0 1px 0 #fff; }
+    .logo { display:flex; align-items:center; justify-content:center; gap: 8px; margin-bottom: 18px; }
+    .logo-badge { display: none; }
+    .logo-img { height: 96px; width: auto; object-fit: contain; }
+    .logo-title { font-weight: 800; font-size: 28px; letter-spacing: 1px; color: #2e6f73; text-shadow: 0 1px 0 #fff; text-transform: uppercase; }
     .layout { display:flex; gap: 20px; align-items: stretch; }
     .main { flex: 1; display:flex; flex-direction: column; gap: 16px; }
-    .sidebar { width: 320px; }
+    .sidebar { width: 360px; max-width: 38vw; }
     .panel { background: var(--white); border-radius: 14px; min-height: 140px; padding: 16px; }
     .panel + .panel { margin-top: 0; }
     .sidebar .panel { height: 100%; max-height: 560px; overflow: auto; }
-    .gallery { display:flex; flex-wrap: wrap; gap: 12px; }
-    .picto { display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 6px; width: 96px; height: 96px; border-radius: 12px; background:#f5f5f5; border:2px solid #e5e5e5; cursor: grab; user-select: none; overflow:hidden; }
+    .gallery { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .picto { display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 6px; width: 100%; height: 100px; border-radius: 12px; background:#f5f5f5; border:2px solid #e5e5e5; cursor: grab; user-select: none; overflow:hidden; }
     .picto:active { cursor: grabbing; }
     .picto-emoji { font-size: 36px; line-height: 1; }
     .picto-label { font-size: 13px; color:#333; }
-    .picto-img { width: 64px; height: 64px; object-fit: contain; display:none; }
+    .picto-img { width: 56px; height: 56px; object-fit: contain; display:none; }
     .builder { display:flex; flex-wrap: wrap; gap: 12px; min-height: 200px; align-content:flex-start; }
     .token { display:flex; align-items:center; justify-content:center; gap:6px; padding: 10px 14px; border-radius: 999px; background:#f5f5f5; border:2px dashed #d7d7d7; cursor: grab; user-select:none; }
     .token .emoji { font-size: 22px; }
@@ -40,8 +41,7 @@
   <div class="wrap">
     <div class="card">
       <div class="logo">
-        <div class="logo-badge">💬</div>
-        <div class="logo-title">TOKI</div>
+        <img class="logo-img" src="/images/toki-logo.png" alt="TOKI" />
       </div>
       <div class="layout">
         <div class="main">
