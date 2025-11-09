@@ -16,13 +16,15 @@
     .panel { background: var(--white); border-radius: 14px; min-height: 140px; padding: 14px; }
     .panel + .panel { margin-top: 16px; }
     .gallery { display:flex; flex-wrap: wrap; gap: 12px; }
-    .picto { display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 6px; width: 96px; height: 96px; border-radius: 12px; background:#f5f5f5; border:2px solid #e5e5e5; cursor: grab; user-select: none; }
+    .picto { display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 6px; width: 96px; height: 96px; border-radius: 12px; background:#f5f5f5; border:2px solid #e5e5e5; cursor: grab; user-select: none; overflow:hidden; }
     .picto:active { cursor: grabbing; }
     .picto-emoji { font-size: 36px; line-height: 1; }
     .picto-label { font-size: 13px; color:#333; }
+    .picto-img { width: 64px; height: 64px; object-fit: contain; display:none; }
     .builder { display:flex; flex-wrap: wrap; gap: 12px; min-height: 120px; align-content:flex-start; }
     .token { display:flex; align-items:center; justify-content:center; gap:6px; padding: 10px 14px; border-radius: 999px; background:#f5f5f5; border:2px dashed #d7d7d7; cursor: grab; user-select:none; }
     .token .emoji { font-size: 22px; }
+    .token .img { width: 24px; height: 24px; object-fit: contain; display:none; }
     .token.removing { opacity:.5; }
     .bar { display:flex; align-items:center; gap:12px; margin-top: 16px; }
     .phrase { flex:1; height: 48px; border-radius: 999px; border:none; padding: 0 16px; background: var(--white); box-shadow: inset 0 0 0 2px rgba(0,0,0,.06); font-size: 16px; }
@@ -51,13 +53,24 @@
   </div>
   <script>
     const PICTOS = [
-      { id: 'boca', label: 'boca', emoji: '👄' },
       { id: 'agua', label: 'agua', emoji: '💧' },
-      { id: 'quiero', label: 'quiero', emoji: '👉' },
-      { id: 'tomar', label: 'tomar', emoji: '🥤' },
-      { id: 'comer', label: 'comer', emoji: '🍽️' },
-      { id: 'pan', label: 'pan', emoji: '🍞' }
+      { id: 'beber', label: 'beber', emoji: '🥤' },
+      { id: 'almuerzo', label: 'almuerzo', emoji: '🍽️' },
+      { id: 'cena', label: 'cena', emoji: '🍽️' },
+      { id: 'quiero', label: 'quiero', emoji: '👉' }
     ];
+
+    const PIC_EXTS = ['png','gif','jpg','jpeg','webp','svg'];
+    function loadImgWithFallback(imgEl, id, onOk, onFail) {
+      let i = 0;
+      function tryNext() {
+        if (i >= PIC_EXTS.length) { onFail?.(); return; }
+        imgEl.src = `/pictos/${id}.` + PIC_EXTS[i++];
+      }
+      imgEl.onload = () => { onOk?.(); };
+      imgEl.onerror = tryNext;
+      tryNext();
+    }
 
     const gallery = document.getElementById('gallery');
     const builder = document.getElementById('builder');
@@ -70,7 +83,20 @@
         el.className = 'picto';
         el.draggable = true;
         el.dataset.pictoId = p.id;
-        el.innerHTML = `<div class="picto-emoji">${p.emoji}</div><div class="picto-label">${p.label}</div>`;
+        const img = document.createElement('img');
+        img.className = 'picto-img';
+        img.alt = p.label;
+        loadImgWithFallback(img, p.id, () => { img.style.display = 'block'; emoji.style.display = 'none'; }, () => { img.style.display = 'none'; emoji.style.display = 'block'; });
+        const emoji = document.createElement('div');
+        emoji.className = 'picto-emoji';
+        emoji.textContent = p.emoji;
+        const label = document.createElement('div');
+        label.className = 'picto-label';
+        label.textContent = p.label;
+        // handlers set in loadImgWithFallback
+        el.appendChild(img);
+        el.appendChild(emoji);
+        el.appendChild(label);
         attachDragHandlers(el);
         gallery.appendChild(el);
       });
@@ -81,7 +107,19 @@
       t.className = 'token';
       t.draggable = true;
       t.dataset.pictoId = picto.id;
-      t.innerHTML = `<span class="emoji">${picto.emoji}</span><span>${picto.label}</span>`;
+      const img = document.createElement('img');
+      img.className = 'img';
+      img.alt = picto.label;
+      loadImgWithFallback(img, picto.id, () => { img.style.display = 'block'; em.style.display = 'none'; }, () => { img.style.display = 'none'; em.style.display = 'inline'; });
+      const em = document.createElement('span');
+      em.className = 'emoji';
+      em.textContent = picto.emoji;
+      const text = document.createElement('span');
+      text.textContent = picto.label;
+      // handlers set in loadImgWithFallback
+      t.appendChild(img);
+      t.appendChild(em);
+      t.appendChild(text);
       attachDragHandlers(t);
       t.addEventListener('dblclick', () => { t.remove(); updatePhrase(); });
       return t;
@@ -134,8 +172,12 @@
       const seq = builderSequence();
       let out = seq.map(id => PICTOS.find(p => p.id === id)?.label || id).join(' ');
       const has = id => seq.includes(id);
-      if (has('boca') && has('agua')) {
+      if (has('beber') && has('agua')) {
         out = 'quiero tomar agua';
+      } else if (has('almuerzo')) {
+        out = 'quiero almorzar';
+      } else if (has('cena')) {
+        out = 'quiero cenar';
       }
       phraseInput.value = out.trim();
     }
