@@ -7,8 +7,21 @@
   <style>
     :root { --sky:#cfeefb; --card:#fdeaa6; --white:#ffffff; --green:#99e2a1; --text:#2a2a2a; }
     * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; color: var(--text); background: var(--sky); }
-    .wrap { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 24px; }
+    body {
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--text);
+
+    background: repeating-linear-gradient(
+        -45deg,
+        var(--sky),
+        var(--sky) 20px,
+        #e6f7ff 20px,
+        #e6f7ff 40px
+    );
+  background-size: 100px 100px;
+  animation: moveStripes 8s linear infinite;
+}    .wrap { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 24px; }
     .card { width: min(1100px, 96vw); background: var(--card); border-radius: 14px; padding: 28px; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
     .logo { display:flex; align-items:center; justify-content:center; gap: 8px; margin-bottom: 18px; }
     .logo-badge { display: none; }
@@ -35,6 +48,14 @@
     .phrase { flex:1; height: 48px; border-radius: 999px; border:none; padding: 0 16px; background: var(--white); box-shadow: inset 0 0 0 2px rgba(0,0,0,.06); font-size: 16px; }
     .send { width: 44px; height: 44px; border-radius: 50%; border:none; background: var(--green); display:flex; align-items:center; justify-content:center; cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,.08); }
     .droppable { outline: 3px dashed #a7d6ff; outline-offset: -6px; }
+    @keyframes moveStripes {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100px 100px; /* Debe coincidir con background-size */
+    }
+    }
   </style>
 </head>
 <body>
