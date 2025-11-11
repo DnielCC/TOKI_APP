@@ -171,86 +171,85 @@
     }
 
     function allowDropZone(zone) {
-      zone.addEventListener('dragover', (e) => {
+    zone.addEventListener('dragover', (e) => {
         e.preventDefault();
         zone.classList.add('droppable');
         e.dataTransfer.dropEffect = 'copyMove';
-      });
-      zone.addEventListener('dragleave', () => zone.classList.remove('droppable'));
-      zone.addEventListener('drop', (e) => {
+    });
+
+    zone.addEventListener('dragleave', () => zone.classList.remove('droppable'));
+
+    zone.addEventListener('drop', (e) => {
         e.preventDefault();
         zone.classList.remove('droppable');
+
+        // --- ¡CAMBIO CLAVE AQUÍ! ---
+        // 1. Limpiamos el panel constructor ANTES de añadir nada
+        zone.innerHTML = '';
+
         const id = e.dataTransfer.getData('text/plain');
         const picto = PICTOS.find(p => p.id === id);
         if (!picto) return;
-        const after = getDragAfterElement(zone, e.clientX, e.clientY);
+
         const token = createToken(picto);
-        if (after == null) zone.appendChild(token); else zone.insertBefore(token, after);
-        updatePhrase();
-      });
+
+        // 2. Añadimos solo el nuevo pictograma
+        zone.appendChild(token);
+
+        updatePhrase(); // Actualizamos la frase
+    });
     }
 
-    function getDragAfterElement(container, x, y) {
-      const elements = [...container.querySelectorAll('.token:not(.removing)')];
-      return elements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = Math.hypot(x - (box.left + box.width/2), y - (box.top + box.height/2));
-        if (offset < closest.offset) return { offset, element: child };
-        return closest;
-      }, { offset: Number.POSITIVE_INFINITY, element: null }).element;
-    }
+
 
     function builderSequence() {
-      return [...builder.querySelectorAll('.token')].map(t => t.dataset.pictoId);
+          return [...builder.querySelectorAll('.token')].map(t => t.dataset.pictoId);
     }
 
     function updatePhrase() {
-      const seq = builderSequence();
-      const has = id => seq.includes(id);
-      const firstOf = ids => ids.find(id => has(id));
+  const seq = builderSequence(); // Esto ahora tendrá 0 o 1 elemento
 
-      let out = seq.map(id => PICTOS.find(p => p.id === id)?.label || id).join(' ');
+  // Si el panel está vacío, limpia el input
+  if (seq.length === 0) {
+    phraseInput.value = '';
+    return;
+  }
 
-      // Reglas de intención con "quiero"
-      if (has('quiero')) {
-        // Tomar agua o leche
-        if ((has('beber') || has('tomar')) && has('agua')) out = 'quiero tomar agua';
-        else if ((has('beber') || has('tomar')) && has('leche')) out = 'quiero tomar leche';
+  const id = seq[0]; // Obtenemos el único ID del pictograma
+  const picto = PICTOS.find(p => p.id === id);
+  if (!picto) return;
 
-        // Comer algo específico
-        const comida = firstOf(['comida','pan','fruta']);
-        if (has('comer') && comida) out = `quiero comer ${comida.replace('_',' ')}`;
+  let phrase = '';
+  const label = picto.label;
 
-        // Comidas del día
-        else if (has('desayuno')) out = 'quiero desayunar';
-        else if (has('almuerzo')) out = 'quiero almorzar';
-        else if (has('cena')) out = 'quiero cenar';
+  // --- ¡ESTA ES LA LÓGICA DE FRASES! ---
+  // Definimos categorías para frases personalizadas
+  const estados = ['feliz','triste','enojado','llorar','reir','miedo','nervioso','cansado','sorpresa'];
+  const sintomas = ['dolor','fiebre','tos','hambre','sed'];
+  const higiene = ['lavar_manos', 'lavar_dientes'];
 
-        // Higiene y baño
-        else if (has('baño')) out = 'quiero ir al baño';
-        else if (has('lavar_manos')) out = 'quiero lavarme las manos';
-        else if (has('lavar_dientes')) out = 'quiero lavarme los dientes';
+  // Lógica para crear la frase
+  if (estados.includes(id)) {
+    phrase = `Estoy ${label}`;
+  }
+  else if (sintomas.includes(id)) {
+    phrase = `Tengo ${label}`;
+  }
+  else if (higiene.includes(id)) {
+    // "lavar manos" -> "lavarme las manos"
+    phrase = `Quiero ${label.replace('lavar','lavarme')}`;
+  }
+  else if (id === 'baño') {
+    phrase = 'Quiero ir al baño';
+  }
+  else {
+    // La regla por defecto para todo lo demás:
+    phrase = `Quiero ${label}`;
+  }
 
-        // Dormir
-        else if (has('dormir')) out = 'quiero dormir';
-
-        // Ir a profesional de salud
-        const prof = firstOf(['doctor','dentista','enfermera']);
-        if (has('ir') && prof) out = `quiero ir al ${prof}`;
-      }
-
-      // Reglas sin "quiero" (estado/ayuda)
-      if (!has('quiero')) {
-        if (has('sed') && has('agua')) out = 'tengo sed, quiero agua';
-        else if (has('hambre')) out = 'tengo hambre';
-        else if (has('fiebre')) out = 'tengo fiebre';
-        else if (has('dolor')) out = 'me duele';
-        else if (has('tos')) out = 'tengo tos';
-      }
-
-      phraseInput.value = out.trim();
-    }
-
+  // Ponemos la primera letra en mayúscula y actualizamos el input
+  phraseInput.value = phrase.charAt(0).toUpperCase() + phrase.slice(1);
+}
     document.getElementById('send').addEventListener('click', () => {
       const text = phraseInput.value.trim();
       if (!text) return;
