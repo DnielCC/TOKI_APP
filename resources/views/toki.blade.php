@@ -130,20 +130,62 @@
     </div>
   </div>
   <script>
-    const PIC_IDS = [
-      'agua','beber','tomar','comer','pan','fruta',
-      'desayuno','almuerzo','cena','leche',
-      'ir','venir','abrir','cerrar','agarrar','dar',
-      'doctor','dentista','enfermera',
-      'baño','higiene','lavar_manos','lavar_dientes','limpiar',
-      'dormir','ver','mirar','escuchar','hablar','correr','saltar',
-      'feliz','triste','enojado','llorar','reir','miedo','nervioso','cansado','sorpresa',
-      'dolor','fiebre','tos','termometro','medicina','pastilla','vacuna','hambre','sed'
-    ];
-    function makePicto(id, emoji='🖼️') { return { id, label: id.replace(/_/g,' '), emoji }; }
-    const PICTOS = PIC_IDS.map(id => makePicto(id));
 
-    const PIC_EXTS = ['png','gif','jpg','jpeg','webp','svg'];
+    /* --- PEGA ESTE NUEVO BLOQUE --- */
+
+const PICTOS = [
+  { id: 'agua', label: 'agua', emoji: '🖼️' },
+  { id: 'beber', label: 'beber', emoji: '🖼️' },
+  { id: 'tomar', label: 'tomar', emoji: '🖼️' },
+  { id: 'comer', label: 'comer', emoji: '🖼️' },
+  { id: 'pan', label: 'pan', emoji: '🖼️' },
+  { id: 'fruta', label: 'fruta', emoji: '🖼️' },
+  { id: 'desayuno', label: 'desayuno', emoji: '🖼️' },
+  { id: 'almuerzo', label: 'almuerzo', emoji: '🖼️' },
+  { id: 'cena', label: 'cena', emoji: '🖼️' },
+  { id: 'leche', label: 'leche', emoji: '🖼️' },
+  { id: 'ir', label: 'ir', emoji: '🖼️' },
+  { id: 'venir', label: 'regresar', emoji: '🖼️' }, // <-- ¡AQUÍ ESTÁ EL CAMBIO!
+  { id: 'abrir', label: 'abrir', emoji: '🖼️' },
+  { id: 'cerrar', label: 'cerrar', emoji: '🖼️' },
+  { id: 'agarrar', label: 'agarrar', emoji: '🖼️' },
+  { id: 'dar', label: 'dar', emoji: '🖼️' },
+  { id: 'doctor', label: 'doctor', emoji: '🖼️' },
+  { id: 'dentista', label: 'dentista', emoji: '🖼️' },
+  { id: 'enfermera', label: 'enfermera', emoji: '🖼️' },
+  { id: 'baño', label: 'baño', emoji: '🖼️' },
+  { id: 'higiene', label: 'bañarme', emoji: '🖼️' },
+  { id: 'lavar_manos', label: 'lavar manos', emoji: '🖼️' },
+  { id: 'lavar_dientes', label: 'lavar dientes', emoji: '🖼️' },
+  { id: 'limpiar', label: 'limpiar', emoji: '🖼️' },
+  { id: 'dormir', label: 'dormir', emoji: '🖼️' },
+  { id: 'ver', label: 'ver', emoji: '🖼️' },
+  { id: 'mirar', label: 'mirar', emoji: '🖼️' },
+  { id: 'escuchar', label: 'escuchar', emoji: '🖼️' },
+  { id: 'hablar', label: 'hablar', emoji: '🖼️' },
+  { id: 'correr', label: 'correr', emoji: '🖼️' },
+  { id: 'saltar', label: 'saltar', emoji: '🖼️' },
+  { id: 'feliz', label: 'feliz', emoji: '🖼️' },
+  { id: 'triste', label: 'triste', emoji: '🖼️' },
+  { id: 'enojado', label: 'enojado', emoji: '🖼️' },
+  { id: 'llorar', label: 'llorar', emoji: '🖼️' },
+  { id: 'reir', label: 'reir', emoji: '🖼️' },
+  { id: 'miedo', label: 'miedo', emoji: '🖼️' },
+  { id: 'nervioso', label: 'nervioso', emoji: '🖼️' },
+  { id: 'cansado', label: 'cansado', emoji: '🖼️' },
+  { id: 'sorpresa', label: 'sorpresa', emoji: '🖼️' },
+  { id: 'dolor', label: 'dolor', emoji: '🖼️' },
+  { id: 'fiebre', label: 'fiebre', emoji: '🖼️' },
+  { id: 'tos', label: 'tos', emoji: '🖼️' },
+  { id: 'termometro', label: 'termometro', emoji: '🖼️' },
+  { id: 'medicina', label: 'medicina', emoji: '🖼️' },
+  { id: 'pastilla', label: 'pastilla', emoji: '🖼️' },
+  { id: 'vacuna', label: 'vacuna', emoji: '🖼️' },
+  { id: 'hambre', label: 'hambre', emoji: '🖼️' },
+  { id: 'sed', label: 'sed', emoji: '🖼️' }
+];
+
+const PIC_EXTS = ['png','gif','jpg','jpeg','webp','svg'];
     function loadImgWithFallback(imgEl, id, onOk, onFail) {
       let i = 0;
       function tryNext() {
@@ -352,6 +394,14 @@ function updatePhrase() {
 
     case 'quiero':
       phrase = 'Quiero algo'; // Para evitar "Quiero quiero"
+      break;
+
+    case 'termometro':
+      phrase = 'Me siento mal, tengo calentura';
+      break;
+
+    case 'vacuna':
+      phrase = 'Quiero vacunarme';
       break;
 
     // --- Caso por Defecto (El resto) ---
