@@ -20,7 +20,9 @@
         #e6f7ff 40px
     );
   background-size: 100px 100px;
-  animation: moveStripes 8s linear infinite;
+  animation:
+      moveStripes 4s linear infinite, /* ¡Más rápido! */
+      scaleBackground 8s ease-in-out infinite alternate;
 }    .wrap { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 24px; }
     .card { width: min(1100px, 96vw); background: var(--card); border-radius: 14px; padding: 28px; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
     .logo { display:flex; align-items:center; justify-content:center; gap: 8px; margin-bottom: 18px; }
@@ -34,28 +36,73 @@
     .panel + .panel { margin-top: 0; }
     .sidebar .panel { height: 100%; max-height: 560px; overflow: auto; }
     .gallery { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .picto { display:flex; align-items:center; justify-content:center; flex-direction: column; gap: 6px; width: 100%; height: 100px; border-radius: 12px; background:#f5f5f5; border:2px solid #e5e5e5; cursor: grab; user-select: none; overflow:hidden; }
+    .picto {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    height: 100px;
+    border-radius: 12px;
+    background:#f5f5f5;
+    border:2px solid #e5e5e5;
+    cursor: grab;
+    user-select: none;
+    overflow:hidden;
+
+    /* --- LÍNEAS MODIFICADAS/AÑADIDAS --- */
+    opacity: 0; /* Empieza invisible */
+    animation: popIn 0.4s ease-out forwards; /* 'forwards' lo mantiene visible */
+    }
     .picto:active { cursor: grabbing; }
     .picto-emoji { font-size: 36px; line-height: 1; }
     .picto-label { font-size: 13px; color:#333; }
-    .picto-img { width: 56px; height: 56px; object-fit: contain; display:none; }
+    .picto-img { width: 56px; height: 56px; object-fit: contain; display:none; mix-blend-mode: multiply; }
     .builder { display:flex; flex-wrap: wrap; gap: 12px; min-height: 200px; align-content:flex-start; }
-    .token { display:flex; align-items:center; justify-content:center; gap:6px; padding: 10px 14px; border-radius: 999px; background:#f5f5f5; border:2px dashed #d7d7d7; cursor: grab; user-select:none; }
+    .token { display:flex; align-items:center; justify-content:center; gap:6px; padding: 10px 14px; border-radius: 999px; background:#f5f5f5; border:2px dashed #d7d7d7; cursor: grab; user-select:none;animation: popIn 0.3s ease-out; }
     .token .emoji { font-size: 22px; }
-    .token .img { width: 24px; height: 24px; object-fit: contain; display:none; }
+    .token .img { width: 24px; height: 24px; object-fit: contain; display:none;  mix-blend-mode: multiply;}
     .token.removing { opacity:.5; }
     .bar { display:flex; align-items:center; gap:12px; margin-top: 16px; }
     .phrase { flex:1; height: 48px; border-radius: 999px; border:none; padding: 0 16px; background: var(--white); box-shadow: inset 0 0 0 2px rgba(0,0,0,.06); font-size: 16px; }
-    .send { width: 44px; height: 44px; border-radius: 50%; border:none; background: var(--green); display:flex; align-items:center; justify-content:center; cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,.08); }
+    .send { width: 44px; height: 44px; border-radius: 50%; border:none; background: var(--green); display:flex; align-items:center; justify-content:center; cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,.08);transition: all 0.2s ease-out; }
+    /* --- AÑADE ESTE NUEVO BLOQUE --- */
+
+    .send:hover {
+    /* Al pasar el mouse */
+    transform: scale(1.15); /* Lo hacemos 15% más grande */
+    filter: brightness(1.1); /* Lo hacemos más brillante */
+    box-shadow: 0 4px 12px rgba(0,0,0,.15); /* Le damos más sombra */
+    }
+
+    .send:active {
+    /* Al hacer clic */
+    transform: scale(0.9); /* Lo encogemos para simular "presión" */
+    filter: brightness(0.9); /* Lo oscurecemos un poco */
+    transition-duration: 0.1s; /* Hacemos que esta acción sea más rápida */
+    }
     .droppable { outline: 3px dashed #a7d6ff; outline-offset: -6px; }
+
     @keyframes moveStripes {
+        0% { background-position: 0 0; }
+        100% { background-position: 200px 200px; } /* Mueve más rápido y en diagonal */
+    }
+    @keyframes scaleBackground {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); } /* Crece ligeramente */
+    }
+    @keyframes popIn {
     0% {
-        background-position: 0 0;
-    }
+    opacity: 0;
+    transform: scale(0.5);
+     }
     100% {
-        background-position: 100px 100px; /* Debe coincidir con background-size */
+    opacity: 1;
+    transform: scale(1);
+     }
     }
-    }
+
   </style>
 </head>
 <body>
@@ -84,9 +131,9 @@
   </div>
   <script>
     const PIC_IDS = [
-      'agua','beber','tomar','comer','comida','pan','fruta',
+      'agua','beber','tomar','comer','pan','fruta',
       'desayuno','almuerzo','cena','leche',
-      'quiero','ir','venir','abrir','cerrar','agarrar','dar',
+      'ir','venir','abrir','cerrar','agarrar','dar',
       'doctor','dentista','enfermera',
       'baño','higiene','lavar_manos','lavar_dientes','limpiar',
       'dormir','ver','mirar','escuchar','hablar','correr','saltar',
@@ -114,9 +161,9 @@
 
     function renderGallery() {
       gallery.innerHTML = '';
-      PICTOS.forEach(p => {
-        const el = document.createElement('div');
-        el.className = 'picto';
+PICTOS.forEach((p, index) => { // <-- Añade (p, index)
+        const el = document.createElement('div');
+        el.className = 'picto';
         el.draggable = true;
         el.dataset.pictoId = p.id;
         const img = document.createElement('img');
@@ -130,6 +177,7 @@
         label.className = 'picto-label';
         label.textContent = p.label;
         // handlers set in loadImgWithFallback
+        el.style.animationDelay = `${index * 0.03}s`;
         el.appendChild(img);
         el.appendChild(emoji);
         el.appendChild(label);
@@ -206,48 +254,116 @@
           return [...builder.querySelectorAll('.token')].map(t => t.dataset.pictoId);
     }
 
-    function updatePhrase() {
-  const seq = builderSequence(); // Esto ahora tendrá 0 o 1 elemento
+/* --- PEGA ESTA FUNCIÓN CORREGIDA --- */
 
-  // Si el panel está vacío, limpia el input
+function updatePhrase() {
+  const seq = builderSequence();
+
+  // Si no hay pictograma, limpia el input
   if (seq.length === 0) {
     phraseInput.value = '';
     return;
   }
 
-  const id = seq[0]; // Obtenemos el único ID del pictograma
+  const id = seq[0]; // Obtenemos el único ID
   const picto = PICTOS.find(p => p.id === id);
   if (!picto) return;
 
   let phrase = '';
-  const label = picto.label;
+  const label = picto.label; // Ej: "lavar manos"
 
-  // --- ¡ESTA ES LA LÓGICA DE FRASES! ---
-  // Definimos categorías para frases personalizadas
-  const estados = ['feliz','triste','enojado','llorar','reir','miedo','nervioso','cansado','sorpresa'];
-  const sintomas = ['dolor','fiebre','tos','hambre','sed'];
-  const higiene = ['lavar_manos', 'lavar_dientes'];
+  // --- Súper Lógica de Frases ---
+  // Usamos un "switch" para manejar todos los casos especiales.
+  // Todo lo que NO esté aquí, usará la regla "Quiero [label]" por defecto.
 
-  // Lógica para crear la frase
-  if (estados.includes(id)) {
-    phrase = `Estoy ${label}`;
-  }
-  else if (sintomas.includes(id)) {
-    phrase = `Tengo ${label}`;
-  }
-  else if (higiene.includes(id)) {
-    // "lavar manos" -> "lavarme las manos"
-    phrase = `Quiero ${label.replace('lavar','lavarme')}`;
-  }
-  else if (id === 'baño') {
-    phrase = 'Quiero ir al baño';
-  }
-  else {
-    // La regla por defecto para todo lo demás:
-    phrase = `Quiero ${label}`;
+  switch (id) {
+
+    // --- Categoría: ESTOY (Emociones/Estados) ---
+    case 'feliz':
+    case 'triste':
+    case 'enojado':
+    case 'nervioso':
+    case 'cansado':
+      phrase = `Estoy ${label}`;
+      break;
+
+    case 'sorpresa':
+      phrase = 'Estoy sorprendido/a';
+      break;
+
+    case 'reir':
+      phrase = 'Estoy riendo';
+      break;
+
+    case 'llorar':
+      phrase = 'Estoy llorando';
+      break;
+
+    // --- Categoría: TENGO (Sensaciones/Síntomas) ---
+    case 'miedo':
+    case 'dolor':
+    case 'fiebre':
+    case 'tos':
+    case 'hambre':
+    case 'sed':
+      phrase = `Tengo ${label}`;
+      break;
+
+    // --- Categoría: QUIERO (Casos Especiales) ---
+    case 'desayuno':
+      phrase = 'Quiero desayunar';
+      break;
+
+    case 'almuerzo':
+      phrase = 'Quiero almorzar';
+      break;
+
+    case 'cena':
+      phrase = 'Quiero cenar';
+      break;
+
+    case 'baño':
+      phrase = 'Quiero ir al baño';
+      break;
+
+    case 'lavar_manos':
+      phrase = 'Quiero lavarme las manos';
+      break;
+
+    case 'lavar_dientes':
+      phrase = 'Quiero lavarme los dientes';
+      break;
+
+    case 'doctor':
+      phrase = 'Quiero ir al doctor';
+      break;
+
+    case 'dentista':
+      phrase = 'Quiero ir al dentista';
+      break;
+
+    case 'enfermera':
+      phrase = 'Quiero ver a la enfermera';
+      break;
+
+    case 'pastilla':
+      phrase = 'Quiero una pastilla';
+      break;
+
+    case 'quiero':
+      phrase = 'Quiero algo'; // Para evitar "Quiero quiero"
+      break;
+
+    // --- Caso por Defecto (El resto) ---
+    // 'agua', 'beber', 'tomar', 'comer', 'pan', 'fruta', 'leche',
+    // 'ir', 'venir', 'abrir', 'cerrar', 'agarrar', 'dar', 'limpiar',
+    // 'dormir', 'ver', 'mirar', 'escuchar', 'hablar', 'correr', 'saltar',
+    // 'termometro', 'medicina', 'vacuna'
+    default:
+      phrase = `Quiero ${label}`;
   }
 
-  // Ponemos la primera letra en mayúscula y actualizamos el input
+  // Ponemos la primera letra en mayúscula
   phraseInput.value = phrase.charAt(0).toUpperCase() + phrase.slice(1);
 }
     document.getElementById('send').addEventListener('click', () => {
