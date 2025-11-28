@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Configuración básica del documento -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOKI</title>
@@ -20,44 +21,190 @@
         #e6f7ff 40px
     );
   background-size: 100px 100px;
-  animation:
-      moveStripes 4s linear infinite, /* ¡Más rápido! */
-      scaleBackground 8s ease-in-out infinite alternate;
 }    .wrap { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 24px; }
     .card { width: min(1100px, 96vw); background: var(--card); border-radius: 14px; padding: 28px; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
     .logo { display:flex; align-items:center; justify-content:center; gap: 8px; margin-bottom: 18px; }
     .logo-badge { display: none; }
     .logo-img { height: 96px; width: auto; object-fit: contain; }
     .logo-title { font-weight: 800; font-size: 28px; letter-spacing: 1px; color: #2e6f73; text-shadow: 0 1px 0 #fff; text-transform: uppercase; }
-    .layout { display:flex; gap: 20px; align-items: stretch; }
-    .main { flex: 1; display:flex; flex-direction: column; gap: 16px; }
-    .sidebar { width: 360px; max-width: 38vw; }
+    .layout { display:flex; flex-direction: column; gap: 20px; }
+    .main { width: 100%; display:flex; flex-direction: column; gap: 16px; }
+    .sidebar { width: 100%; max-width: 100%; }
     .panel { background: var(--white); border-radius: 14px; min-height: 140px; padding: 16px; }
     .panel + .panel { margin-top: 0; }
     .sidebar .panel { height: 100%; max-height: 560px; overflow: auto; }
-    .gallery { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .picto {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-    height: 100px;
-    border-radius: 12px;
-    background:#f5f5f5;
-    border:2px solid #e5e5e5;
-    cursor: grab;
-    user-select: none;
-    overflow:hidden;
-
-    /* --- LÍNEAS MODIFICADAS/AÑADIDAS --- */
-    opacity: 0; /* Empieza invisible */
-    animation: popIn 0.4s ease-out forwards; /* 'forwards' lo mantiene visible */
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 16px;
+      width: 100%;
+      overflow-y: auto;
+      max-height: 100%;
     }
+    
+    .gallery-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .category-separator {
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 16px;
+      color: #2a2a2a;
+      background: #f0f4f8;
+      border-radius: 8px;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      margin: 4px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--green);
+    }
+    
+    .pictos-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      width: 100%;
+      padding: 4px 0;
+    }
+    
+    .picto {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-width: 0;
+      padding: 12px 8px;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      cursor: grab;
+      user-select: none;
+      opacity: 0;
+      animation: popIn 0.3s ease-out forwards;
+      position: relative;
+      overflow: visible;
+      border: 1px solid rgba(0,0,0,0.1);
+      height: auto;
+      min-height: 130px;
+    }
+    
+    .picto:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .picto:active {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+    
+    .picto-img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      display: none;
+      mix-blend-mode: multiply;
+    }
+    
+    .picto-emoji {
+      font-size: 32px;
+      line-height: 1;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .picto-label {
+      font-size: 13px;
+      text-align: center;
+      color: #000000 !important;
+      width: 100%;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      font-weight: 600;
+      padding: 4px 2px;
+      background: #ffffff !important;
+      border-radius: 4px;
+      margin: 6px 0 0 0;
+      border: 1px solid #e0e0e0 !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      text-transform: capitalize;
+      position: relative;
+      z-index: 2;
+      word-break: break-word;
+      max-height: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .pictos-row {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+      }
+      
+      .picto {
+        padding: 10px 4px;
+        min-height: 110px;
+        justify-content: space-between;
+      }
+      
+      .picto-img {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .picto-emoji {
+        font-size: 26px;
+      }
+      
+      .picto-label {
+        font-size: 11px !important;
+        padding: 3px 2px !important;
+        margin-top: 6px !important;
+        line-height: 1.1;
+        -webkit-line-clamp: 2;
+      }
+    }
+    
+    /* Custom scrollbar */
+    .gallery::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    .gallery::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    
+    .gallery::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 4px;
+    }
+    
+    .gallery::-webkit-scrollbar-thumb:hover {
+      background: #a0aec0;
+    }
+    /* Removed duplicate .picto styles */
     .picto:active { cursor: grabbing; }
-    .picto-emoji { font-size: 36px; line-height: 1; }
-    .picto-label { font-size: 13px; color:#333; }
     .picto-img { width: 56px; height: 56px; object-fit: contain; display:none; mix-blend-mode: multiply; }
     .builder { display:flex; flex-wrap: wrap; gap: 12px; min-height: 200px; align-content:flex-start; }
     .token { display:flex; align-items:center; justify-content:center; gap:6px; padding: 10px 14px; border-radius: 999px; background:#f5f5f5; border:2px dashed #d7d7d7; cursor: grab; user-select:none;animation: popIn 0.3s ease-out; }
@@ -84,14 +231,101 @@
     }
     .droppable { outline: 3px dashed #a7d6ff; outline-offset: -6px; }
 
-    @keyframes moveStripes {
-        0% { background-position: 0 0; }
-        100% { background-position: 200px 200px; } /* Mueve más rápido y en diagonal */
+    /* Historial de frases */
+    .history-container {
+      margin-top: 16px;
+      background: #F5F6FA;
+      border-radius: 8px;
+      padding: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    @keyframes scaleBackground {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.05); } /* Crece ligeramente */
+    
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e8f5e9;
+      padding: 0 12px 0 16px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border-bottom: 1px solid #e0e0e0;
     }
+    
+    .history-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2D3436;
+      padding: 12px 0;
+      margin: 0;
+    }
+    
+    .clear-history {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e74c3c;
+      transition: all 0.2s ease;
+    }
+    
+    .clear-history:hover {
+      background: rgba(231, 76, 60, 0.1);
+    }
+    
+    .clear-history:active {
+      transform: scale(0.95);
+    }
+    
+    .clear-history svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .historial {
+      color: #2D3436;
+      padding: 0;
+      max-height: 180px;
+      overflow-y: auto;
+      font-size: 14px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+    
+    .historial-item {
+      padding: 6px 8px;
+      cursor: pointer;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .historial-item:hover {
+      background: #e8f8f3;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #00B894;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      opacity: 0.9;
+      animation: fadeout 2s forwards;
+      z-index: 1000;
+    }
+    
+    @keyframes fadeout {
+      0% { opacity: 1; }
+      80% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+
     @keyframes popIn {
     0% {
     opacity: 0;
@@ -106,87 +340,184 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
+    <!-- Contenedor principal de la aplicación -->
+    <div class="wrap">
     <div class="card">
+      <!-- Logo de la aplicación -->
       <div class="logo">
         <img class="logo-img" src="/images/toki-logo.png" alt="TOKI" />
       </div>
       <div class="layout">
+        <aside class="sidebar">
+          <!-- Panel de navegación -->
+          <div class="panel">
+            <div id="gallery" class="gallery" aria-label="Pictogramas disponibles"></div>
+          </div>
+        </aside>
         <div class="main">
           <div class="panel">
             <div id="builder" class="builder" aria-label="Construir frase aquí"></div>
           </div>
           <div class="bar">
             <input id="phrase" class="phrase" type="text" placeholder="La frase aparecerá aquí" readonly />
-            <button id="send" class="send" title="Decir/Enviar" aria-label="Enviar">📨</button>
+            <button id="send" class="send" title="Guardar en historial" aria-label="Guardar">💾</button>
+          </div>
+          <div class="history-container">
+            <div class="history-header">
+              <h3 class="history-title">Historial de frases</h3>
+              <button id="clear-history" class="clear-history" title="Borrar historial" aria-label="Borrar historial">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
+            <div id="historial" class="historial" aria-label="Historial de frases recientes"></div>
           </div>
         </div>
-        <aside class="sidebar">
-          <div class="panel">
-            <div id="gallery" class="gallery" aria-label="Pictogramas disponibles"></div>
-          </div>
-        </aside>
       </div>
     </div>
   </div>
   <script>
 
-    /* --- PEGA ESTE NUEVO BLOQUE --- */
+    
 
-const PICTOS = [
-  { id: 'agua', label: 'agua', emoji: '🖼️' },
-  { id: 'beber', label: 'beber', emoji: '🖼️' },
-  { id: 'tomar', label: 'tomar', emoji: '🖼️' },
-  { id: 'comer', label: 'comer', emoji: '🖼️' },
-  { id: 'pan', label: 'pan', emoji: '🖼️' },
-  { id: 'fruta', label: 'fruta', emoji: '🖼️' },
-  { id: 'desayuno', label: 'desayuno', emoji: '🖼️' },
-  { id: 'almuerzo', label: 'almuerzo', emoji: '🖼️' },
-  { id: 'cena', label: 'cena', emoji: '🖼️' },
-  { id: 'leche', label: 'leche', emoji: '🖼️' },
-  { id: 'ir', label: 'ir', emoji: '🖼️' },
-  { id: 'venir', label: 'regresar', emoji: '🖼️' }, // <-- ¡AQUÍ ESTÁ EL CAMBIO!
-  { id: 'abrir', label: 'abrir', emoji: '🖼️' },
-  { id: 'cerrar', label: 'cerrar', emoji: '🖼️' },
-  { id: 'agarrar', label: 'agarrar', emoji: '🖼️' },
-  { id: 'dar', label: 'dar', emoji: '🖼️' },
-  { id: 'doctor', label: 'doctor', emoji: '🖼️' },
-  { id: 'dentista', label: 'dentista', emoji: '🖼️' },
-  { id: 'enfermera', label: 'enfermera', emoji: '🖼️' },
-  { id: 'baño', label: 'baño', emoji: '🖼️' },
-  { id: 'higiene', label: 'bañarme', emoji: '🖼️' },
-  { id: 'lavar_manos', label: 'lavar manos', emoji: '🖼️' },
-  { id: 'lavar_dientes', label: 'lavar dientes', emoji: '🖼️' },
-  { id: 'limpiar', label: 'limpiar', emoji: '🖼️' },
-  { id: 'dormir', label: 'dormir', emoji: '🖼️' },
-  { id: 'ver', label: 'ver', emoji: '🖼️' },
-  { id: 'mirar', label: 'mirar', emoji: '🖼️' },
-  { id: 'escuchar', label: 'escuchar', emoji: '🖼️' },
-  { id: 'hablar', label: 'hablar', emoji: '🖼️' },
-  { id: 'correr', label: 'correr', emoji: '🖼️' },
-  { id: 'saltar', label: 'saltar', emoji: '🖼️' },
-  { id: 'feliz', label: 'feliz', emoji: '🖼️' },
-  { id: 'triste', label: 'triste', emoji: '🖼️' },
-  { id: 'enojado', label: 'enojado', emoji: '🖼️' },
-  { id: 'llorar', label: 'llorar', emoji: '🖼️' },
-  { id: 'reir', label: 'reir', emoji: '🖼️' },
-  { id: 'miedo', label: 'miedo', emoji: '🖼️' },
-  { id: 'nervioso', label: 'nervioso', emoji: '🖼️' },
-  { id: 'cansado', label: 'cansado', emoji: '🖼️' },
-  { id: 'sorpresa', label: 'sorpresa', emoji: '🖼️' },
-  { id: 'dolor', label: 'dolor', emoji: '🖼️' },
-  { id: 'fiebre', label: 'fiebre', emoji: '🖼️' },
-  { id: 'tos', label: 'tos', emoji: '🖼️' },
-  { id: 'termometro', label: 'termometro', emoji: '🖼️' },
-  { id: 'medicina', label: 'medicina', emoji: '🖼️' },
-  { id: 'pastilla', label: 'pastilla', emoji: '🖼️' },
-  { id: 'vacuna', label: 'vacuna', emoji: '🖼️' },
-  { id: 'hambre', label: 'hambre', emoji: '🖼️' },
-  { id: 'sed', label: 'sed', emoji: '🖼️' }
+// Lista de categorías y pictogramas disponibles
+const CATEGORIES = [
+  {
+    id: 'personas',
+    name: 'Personas y Relaciones',
+    pictos: [
+      { id: 'abuela', label: 'abuela' },
+      { id: 'abuelo', label: 'abuelo' },
+      { id: 'amigo', label: 'amigo' },
+      { id: 'madre', label: 'madre' },
+      { id: 'padre', label: 'padre' },
+      { id: 'maestro', label: 'maestro' },
+      { id: 'hermana', label: 'hermana' },
+      { id: 'hermano', label: 'hermano' },
+      { id: 'doctor', label: 'doctor' },
+      { id: 'enfermera', label: 'enfermera' },
+      { id: 'dentista', label: 'dentista' }
+    ]
+  },
+  {
+    id: 'emociones',
+    name: 'Emociones y Estados',
+    pictos: [
+      { id: 'feliz', label: 'feliz' },
+      { id: 'triste', label: 'triste' },
+      { id: 'enojado', label: 'enojado' },
+      { id: 'nervioso', label: 'nervioso' },
+      { id: 'sorpresa', label: 'sorpresa' },
+      { id: 'reir', label: 'reir' },
+      { id: 'llorar', label: 'llorar' },
+      { id: 'miedo', label: 'miedo' },
+      { id: 'cansado', label: 'cansado' },
+      { id: 'hambre', label: 'hambre' },
+      { id: 'sed', label: 'sed' },
+      { id: 'dolor', label: 'dolor' },
+      { id: 'fiebre', label: 'fiebre' }
+    ]
+  },
+  {
+    id: 'acciones',
+    name: 'Acciones Diarias',
+    pictos: [
+      { id: 'abrir', label: 'abrir' },
+      { id: 'cerrar', label: 'cerrar' },
+      { id: 'agarrar', label: 'agarrar' },
+      { id: 'caminar', label: 'caminar' },
+      { id: 'correr', label: 'correr' },
+      { id: 'saltar', label: 'saltar' },
+      { id: 'tomar', label: 'tomar' },
+      { id: 'beber', label: 'beber' },
+      { id: 'comer', label: 'comer' },
+      { id: 'cocinar', label: 'cocinar' },
+      { id: 'despertar', label: 'despertar' },
+      { id: 'dormir', label: 'dormir' },
+      { id: 'lavar_manos', label: 'lavar manos' },
+      { id: 'lavar_dientes', label: 'lavar dientes' },
+      { id: 'limpiar', label: 'limpiar' },
+      { id: 'hablar', label: 'hablar' },
+      { id: 'escuchar', label: 'escuchar' },
+      { id: 'mirar', label: 'mirar' },
+      { id: 'ver', label: 'ver' },
+      { id: 'escribir', label: 'escribir' },
+      { id: 'dibujar', label: 'dibujar' },
+      { id: 'estudiar', label: 'estudiar' },
+      { id: 'trabajar', label: 'trabajar' },
+      { id: 'jugar', label: 'jugar' },
+      { id: 'venir', label: 'regresar' },
+      { id: 'ir', label: 'ir' }
+    ]
+  },
+  {
+    id: 'lugares',
+    name: 'Lugares y Espacios',
+    pictos: [
+      { id: 'casa', label: 'casa' },
+      { id: 'cocina', label: 'cocina' },
+      { id: 'dormitorio', label: 'dormitorio' },
+      { id: 'escuela', label: 'escuela' },
+      { id: 'biblioteca', label: 'biblioteca' },
+      { id: 'ciudad', label: 'ciudad' },
+      { id: 'parque', label: 'parque' },
+      { id: 'playa', label: 'playa' },
+      { id: 'restaurante', label: 'restaurante' },
+      { id: 'hospital', label: 'hospital' },
+      { id: 'farmacia', label: 'farmacia' },
+      { id: 'supermercado', label: 'supermercado' }
+    ]
+  },
+  {
+    id: 'objetos',
+    name: 'Objetos y Alimentos',
+    pictos: [
+      { id: 'agua', label: 'agua' },
+      { id: 'leche', label: 'leche' },
+      { id: 'pan', label: 'pan' },
+      { id: 'fruta', label: 'fruta' },
+      { id: 'comida', label: 'comida' },
+      { id: 'desayuno', label: 'desayuno' },
+      { id: 'almuerzo', label: 'almuerzo' },
+      { id: 'cena', label: 'cena' },
+      { id: 'libro', label: 'libro' },
+      { id: 'computadora', label: 'computadora' },
+      { id: 'diccionario', label: 'diccionario' },
+      { id: 'medicina', label: 'medicina' },
+      { id: 'pastilla', label: 'pastilla' },
+      { id: 'termometro', label: 'termometro' }
+    ]
+  },
+  {
+    id: 'actividades',
+    name: 'Actividades Específicas',
+    pictos: [
+      { id: 'arte', label: 'arte' },
+      { id: 'ciencias', label: 'ciencias' },
+      { id: 'matematicas', label: 'matemáticas' },
+      { id: 'caminar', label: 'caminar' },
+      { id: 'bailar', label: 'bailar' },
+      { id: 'trabajar', label: 'trabajar' },
+      { id: 'vacuna', label: 'vacuna' },
+      { id: 'baño', label: 'baño' },
+      { id: 'higiene', label: 'bañarme' }
+    ]
+  }
 ];
 
+// Create a flat array of all pictos for backward compatibility
+// Lista plana de todos los pictogramas
+const PICTOS = CATEGORIES.flatMap(category => category.pictos);
+
+// Extensiones de imagen soportadas
 const PIC_EXTS = ['png','gif','jpg','jpeg','webp','svg'];
-    function loadImgWithFallback(imgEl, id, onOk, onFail) {
+
+// Función para cargar imágenes con manejo de errores
+function loadImgWithFallback(imgEl, id, onOk, onFail) {
       let i = 0;
       function tryNext() {
         if (i >= PIC_EXTS.length) { onFail?.(); return; }
@@ -201,57 +532,136 @@ const PIC_EXTS = ['png','gif','jpg','jpeg','webp','svg'];
     const builder = document.getElementById('builder');
     const phraseInput = document.getElementById('phrase');
 
+    // Función para mostrar los pictogramas en la galería
     function renderGallery() {
       gallery.innerHTML = '';
-PICTOS.forEach((p, index) => { // <-- Añade (p, index)
-        const el = document.createElement('div');
-        el.className = 'picto';
-        el.draggable = true;
-        el.dataset.pictoId = p.id;
-        const img = document.createElement('img');
-        img.className = 'picto-img';
-        img.alt = p.label;
-        loadImgWithFallback(img, p.id, () => { img.style.display = 'block'; emoji.style.display = 'none'; }, () => { img.style.display = 'none'; emoji.style.display = 'block'; });
-        const emoji = document.createElement('div');
-        emoji.className = 'picto-emoji';
-        emoji.textContent = p.emoji;
-        const label = document.createElement('div');
-        label.className = 'picto-label';
-        label.textContent = p.label;
-        // handlers set in loadImgWithFallback
-        el.style.animationDelay = `${index * 0.03}s`;
-        el.appendChild(img);
-        el.appendChild(emoji);
-        el.appendChild(label);
-        attachDragHandlers(el);
-        gallery.appendChild(el);
+      
+      // Add a container for the categories
+      const categoriesContainer = document.createElement('div');
+      categoriesContainer.className = 'categories-container';
+      
+      // Track the total number of pictos for animation delay
+      let totalPictos = 0;
+      
+      // Create a section for each category
+      CATEGORIES.forEach(category => {
+        if (category.pictos.length === 0) return;
+        
+        // Create category section
+        const section = document.createElement('div');
+        section.className = 'gallery-section';
+        
+        // Add category separator
+        const separator = document.createElement('div');
+        separator.className = 'category-separator';
+        separator.textContent = category.name;
+        section.appendChild(separator);
+        
+        // Create a row for the pictos in this category
+        const row = document.createElement('div');
+        row.className = 'pictos-row';
+        
+        // Add each picto to the row
+        category.pictos.forEach((p, index) => {
+          const el = document.createElement('div');
+          el.className = 'picto';
+          el.draggable = true;
+          el.dataset.pictoId = p.id;
+          
+          // Set animation delay based on the total number of pictos
+          el.style.animationDelay = `${totalPictos * 0.03}s`;
+          totalPictos++;
+          
+          // Create image element
+          const img = document.createElement('img');
+          img.className = 'picto-img';
+          img.alt = p.label;
+          
+          // Create label element
+          const label = document.createElement('div');
+          label.className = 'picto-label';
+          label.textContent = p.label;
+          
+          // Set up image loading
+          loadImgWithFallback(
+            img, 
+            p.id, 
+            () => { 
+              img.style.display = 'block';
+            }, 
+            () => {
+              // If image fails to load, we'll just show the label
+              img.style.display = 'none';
+            }
+          );
+          
+          // Assemble the picto element
+          el.appendChild(img);
+          el.appendChild(label);
+          
+          // Add drag handlers
+          attachDragHandlers(el);
+          
+          // Add to the row
+          row.appendChild(el);
+        });
+        
+        // Add the row to the section
+        section.appendChild(row);
+        
+        // Add the section to the container
+        categoriesContainer.appendChild(section);
       });
+      
+      // Add the categories container to the gallery
+      gallery.appendChild(categoriesContainer);
     }
 
-    function createToken(picto) {
+    // Crea un nuevo elemento de token arrastrable
+function createToken(picto) {
       const t = document.createElement('div');
       t.className = 'token';
       t.draggable = true;
       t.dataset.pictoId = picto.id;
+      
       const img = document.createElement('img');
       img.className = 'img';
       img.alt = picto.label;
-      loadImgWithFallback(img, picto.id, () => { img.style.display = 'block'; em.style.display = 'none'; }, () => { img.style.display = 'none'; em.style.display = 'inline'; });
-      const em = document.createElement('span');
-      em.className = 'emoji';
-      em.textContent = picto.emoji;
+      
+      // Set up image loading
+      loadImgWithFallback(
+        img, 
+        picto.id, 
+        () => { 
+          img.style.display = 'block';
+        }, 
+        () => {
+          // If image fails to load, we'll just show the label
+          img.style.display = 'none';
+        }
+      );
+      
       const text = document.createElement('span');
       text.textContent = picto.label;
-      // handlers set in loadImgWithFallback
+      
+      // Add elements to token
       t.appendChild(img);
-      t.appendChild(em);
       t.appendChild(text);
+      
+      // Add drag handlers
       attachDragHandlers(t);
-      t.addEventListener('dblclick', () => { t.remove(); updatePhrase(); });
+      
+      // Add double-click to remove
+      t.addEventListener('dblclick', () => { 
+        t.remove(); 
+        updatePhrase(); 
+      });
+      
       return t;
     }
 
-    function attachDragHandlers(el) {
+    // Añade los manejadores de eventos de arrastrar y soltar
+function attachDragHandlers(el) {
       el.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', el.dataset.pictoId);
         e.dataTransfer.effectAllowed = 'copyMove';
@@ -319,7 +729,6 @@ function updatePhrase() {
   // Todo lo que NO esté aquí, usará la regla "Quiero [label]" por defecto.
 
   switch (id) {
-
     // --- Categoría: ESTOY (Emociones/Estados) ---
     case 'feliz':
     case 'triste':
@@ -351,11 +760,76 @@ function updatePhrase() {
       phrase = `Tengo ${label}`;
       break;
 
+    // --- Categoría: QUIERO (Acciones) ---
+    case 'bailar':
+    case 'caminar':
+    case 'cocinar':
+    case 'despertar':
+    case 'dibujar':
+    case 'escribir':
+    case 'estudiar':
+    case 'jugar':
+    case 'leer':
+    case 'trabajar':
+      phrase = `Quiero ${label}`;
+      break;
+
+    // --- Categoría: QUIERO VER (Personas) ---
+    case 'abuela':
+    case 'abuelo':
+    case 'amigo':
+    case 'hermana':
+    case 'hermano':
+    case 'madre':
+    case 'maestro':
+      phrase = `Quiero ver a mi ${label}`;
+      break;
+    case 'padre':
+      phrase = 'Quiero ver a mi papá';
+      break;
+
+    // --- Categoría: OBJETOS/CONCEPTOS ---
+    case 'arte':
+      phrase = 'Quiero hacer arte';
+      break;
+    case 'ciencias':
+    case 'matematicas':
+      phrase = `Quiero aprender ${label}`;
+      break;
+    case 'computadora':
+    case 'diccionario':
+      const article = id === 'computadora' ? 'la' : 'el';
+      phrase = `Quiero usar ${article} ${label}`;
+      break;
+    case 'libro':
+      phrase = 'Quiero un libro';
+      break;
+
+    // --- Categoría: LUGARES ---
+    case 'casa':
+      phrase = 'Quiero ir a casa';
+      break;
+    case 'cocina':
+    case 'biblioteca':
+    case 'ciudad':
+    case 'dormitorio':
+    case 'escuela':
+    case 'farmacia':
+    case 'hospital':
+    case 'parque':
+    case 'playa':
+    case 'restaurante':
+    case 'supermercado':
+      const preposition = id === 'cocina' || id === 'ciudad' ? 'a la' : 
+                         id === 'escuela' || id === 'farmacia' || id === 'playa' ? 'a la' :
+                         'al';
+      phrase = `Quiero ir ${preposition} ${label}`;
+      break;
+
     // --- Categoría: QUIERO (Casos Especiales) ---
     case 'desayuno':
       phrase = 'Quiero desayunar';
       break;
-
     case 'almuerzo':
       phrase = 'Quiero almorzar';
       break;
@@ -422,8 +896,75 @@ function updatePhrase() {
       alert(text);
     });
 
+    // Initialize the app
     renderGallery();
     allowDropZone(builder);
+    renderHistorial(); // Load history on page load
+    
+    // Set up the save button
+    document.getElementById('send').onclick = guardarFrase;
+    
+    // Set up the clear history button
+    document.getElementById('clear-history').addEventListener('click', () => {
+      if (confirm('¿Estás seguro de que deseas borrar todo el historial de frases?')) {
+        localStorage.removeItem('toki_historial');
+        renderHistorial();
+        showToast('Historial borrado');
+      }
+    });
+    
+    // Function to save a phrase to history
+    function guardarFrase() {
+        const frase = phraseInput.value.trim();
+        if (!frase) return;
+
+        let historial = JSON.parse(localStorage.getItem("toki_historial")) || [];
+        
+        // Remove if already exists to avoid duplicates
+        historial = historial.filter(f => f !== frase);
+        
+        // Add to beginning of array
+        historial.unshift(frase);
+        
+        // Keep only the 15 most recent
+        if (historial.length > 15) historial = historial.slice(0, 15);
+
+        localStorage.setItem("toki_historial", JSON.stringify(historial));
+
+        renderHistorial();
+        showToast("✓ Frase guardada");
+    }
+    
+    // Function to render the history list
+    function renderHistorial() {
+        const cont = document.getElementById("historial");
+        const historial = JSON.parse(localStorage.getItem("toki_historial")) || [];
+
+        if (historial.length === 0) {
+            cont.innerHTML = '<div style="color: #7f8c8d; font-style: italic; padding: 10px; text-align: center;">No hay historial aún</div>';
+            return;
+        }
+
+        cont.innerHTML = historial.map(f => 
+            `<div class="historial-item" onclick="colocarFrase('${f.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">
+                ${f}
+            </div>`
+        ).join('');
+    }
+    
+    // Function to place a phrase in the input
+    function colocarFrase(texto) {
+        phraseInput.value = texto;
+    }
+    
+    // Function to show a toast notification
+    function showToast(msg) {
+        const t = document.createElement("div");
+        t.className = "toast";
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2000);
+    }
   </script>
 </body>
 </html>
