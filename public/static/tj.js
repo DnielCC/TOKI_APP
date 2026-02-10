@@ -142,70 +142,142 @@ function loadImgWithFallback(imgEl, id, onOk, onFail) {
     const gallery = document.getElementById('gallery');
     const builder = document.getElementById('builder');
     const phraseInput = document.getElementById('phrase');
+    const categoryFilters = document.getElementById('category-filters');
+    const searchInput = document.getElementById('search-input');
+
+    let activeCategory = 'all';
+    let searchTerm = '';
+
+    function renderFilters() {
+      categoryFilters.innerHTML = '';
+
+      const allBtn = document.createElement('button');
+      allBtn.className = `filter-btn ${activeCategory === 'all' ? 'active' : ''}`;
+      allBtn.textContent = 'Todos';
+      allBtn.onclick = () => {
+        activeCategory = 'all';
+        searchInput.value = ''; // Clear search when changing category
+        searchTerm = '';
+        renderFilters();
+        renderGallery();
+      };
+      categoryFilters.appendChild(allBtn);
+
+      CATEGORIES.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `filter-btn ${activeCategory === cat.id ? 'active' : ''}`;
+        btn.textContent = cat.name.split(' ')[0]; // Use first word for brevity or full name
+        btn.onclick = () => {
+          activeCategory = cat.id;
+          searchInput.value = ''; // Clear search when changing category
+          searchTerm = '';
+          renderFilters();
+          renderGallery();
+        };
+        categoryFilters.appendChild(btn);
+      });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.toLowerCase().trim();
+        if (searchTerm) {
+            // If searching, we might want to search across ALL categories or just the current one
+            // Let's decide to search across ALL for better usability
+            activeCategory = 'all';
+            renderFilters(); // Update active button state
+        }
+        renderGallery();
+    });
 
     function renderGallery() {
       gallery.innerHTML = '';
-      
+
       const categoriesContainer = document.createElement('div');
       categoriesContainer.className = 'categories-container';
-      
+
       let totalPictos = 0;
-      
-      CATEGORIES.forEach(category => {
-        if (category.pictos.length === 0) return;
-        
+      let hasResults = false;
+
+      // Determine which categories to show
+      let categoriesToProcess = activeCategory === 'all'
+        ? CATEGORIES
+        : CATEGORIES.filter(c => c.id === activeCategory);
+
+      categoriesToProcess.forEach(category => {
+        // Filter pictos within the category based on search term
+        const filteredPictos = category.pictos.filter(p =>
+            p.label.toLowerCase().includes(searchTerm)
+        );
+
+        if (filteredPictos.length === 0) return;
+
+        hasResults = true;
+
         const section = document.createElement('div');
         section.className = 'gallery-section';
-        
+
         const separator = document.createElement('div');
         separator.className = 'category-separator';
         separator.textContent = category.name;
         section.appendChild(separator);
-        
+
         const row = document.createElement('div');
         row.className = 'pictos-row';
-        
-        category.pictos.forEach((p, index) => {
+
+        filteredPictos.forEach((p, index) => {
           const el = document.createElement('div');
           el.className = 'picto';
           el.draggable = true;
           el.dataset.pictoId = p.id;
-          
+
           el.style.animationDelay = `${totalPictos * 0.03}s`;
           totalPictos++;
-          
+
           const img = document.createElement('img');
           img.className = 'picto-img';
           img.alt = p.label;
-          
+
           const label = document.createElement('div');
           label.className = 'picto-label';
           label.textContent = p.label;
-          
+
           loadImgWithFallback(
-            img, 
-            p.id, 
-            () => { 
+            img,
+            p.id,
+            () => {
               img.style.display = 'block';
-            }, 
+            },
             () => {
               img.style.display = 'none';
             }
           );
-          
+
           el.appendChild(img);
           el.appendChild(label);
-          
+
           attachDragHandlers(el);
-          
+
           row.appendChild(el);
         });
-        
+
         section.appendChild(row);
-        
+
         categoriesContainer.appendChild(section);
       });
-      
+
+      if (!hasResults) {
+          const noResults = document.createElement('div');
+          noResults.style.textAlign = 'center';
+          noResults.style.padding = '32px';
+          noResults.style.color = '#888';
+          noResults.style.width = '100%';
+          noResults.innerHTML = `
+              <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+              <div>No se encontraron pictogramas para "${searchTerm}"</div>
+          `;
+          categoriesContainer.appendChild(noResults);
+      }
+
       gallery.appendChild(categoriesContainer);
     }
 
@@ -214,35 +286,35 @@ function createToken(picto) {
       t.className = 'token';
       t.draggable = true;
       t.dataset.pictoId = picto.id;
-      
+
       const img = document.createElement('img');
       img.className = 'img';
       img.alt = picto.label;
-      
+
       loadImgWithFallback(
-        img, 
-        picto.id, 
-        () => { 
+        img,
+        picto.id,
+        () => {
           img.style.display = 'block';
-        }, 
+        },
         () => {
           img.style.display = 'none';
         }
       );
-      
+
       const text = document.createElement('span');
       text.textContent = picto.label;
-      
+
       t.appendChild(img);
       t.appendChild(text);
-      
+
       attachDragHandlers(t);
-      
-      t.addEventListener('dblclick', () => { 
-        t.remove(); 
-        updatePhrase(); 
+
+      t.addEventListener('dblclick', () => {
+        t.remove();
+        updatePhrase();
       });
-      
+
       return t;
     }
 
@@ -278,7 +350,7 @@ function attachDragHandlers(el) {
 
         zone.appendChild(token);
 
-        updatePhrase(); 
+        updatePhrase();
     });
     }
 
@@ -297,12 +369,12 @@ function updatePhrase() {
     return;
   }
 
-  const id = seq[0]; 
+  const id = seq[0];
   const picto = PICTOS.find(p => p.id === id);
   if (!picto) return;
 
   let phrase = '';
-  const label = picto.label; 
+  const label = picto.label;
 
 
   switch (id) {
@@ -391,7 +463,7 @@ function updatePhrase() {
     case 'playa':
     case 'restaurante':
     case 'supermercado':
-      const preposition = id === 'cocina' || id === 'ciudad' ? 'a la' : 
+      const preposition = id === 'cocina' || id === 'ciudad' ? 'a la' :
                          id === 'escuela' || id === 'farmacia' || id === 'playa' ? 'a la' :
                          'al';
       phrase = `Quiero ir ${preposition} ${label}`;
@@ -437,7 +509,7 @@ function updatePhrase() {
       break;
 
     case 'quiero':
-      phrase = 'Quiero algo'; 
+      phrase = 'Quiero algo';
       break;
 
     case 'termometro':
@@ -454,18 +526,49 @@ function updatePhrase() {
 
   phraseInput.value = phrase.charAt(0).toUpperCase() + phrase.slice(1);
 }
-    document.getElementById('send').addEventListener('click', () => {
-      const text = phraseInput.value.trim();
-      if (!text) return;
-      alert(text);
+
+    // TTS Functionality
+    function speakPhrase() {
+        const text = phraseInput.value.trim();
+        if (!text) return;
+
+        // Cancel any current speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES'; // Spanish
+        utterance.rate = 0.9;
+        utterance.pitch = 1.1; // Slightly higher pitch for friendliness
+
+        // Try to select a Spanish voice
+        const voices = window.speechSynthesis.getVoices();
+        const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+        if (spanishVoice) utterance.voice = spanishVoice;
+
+        window.speechSynthesis.speak(utterance);
+
+        // Button animation
+        const btn = document.getElementById('speak');
+        btn.classList.add('speaking');
+        utterance.onend = () => btn.classList.remove('speaking');
+    }
+
+    document.getElementById('speak').addEventListener('click', speakPhrase);
+
+    document.getElementById('clear-builder').addEventListener('click', () => {
+        builder.innerHTML = '';
+        updatePhrase();
     });
 
+    renderFilters();
     renderGallery();
     allowDropZone(builder);
-    renderHistorial(); 
-    
-    document.getElementById('send').onclick = guardarFrase;
-    
+    renderHistorial();
+
+    // document.getElementById('send').onclick = guardarFrase; // Using addEventListener below instead
+
+    document.getElementById('send').addEventListener('click', guardarFrase);
+
     document.getElementById('clear-history').addEventListener('click', () => {
       if (confirm('¿Estás seguro de que deseas borrar todo el historial de frases?')) {
         localStorage.removeItem('toki_historial');
@@ -473,17 +576,17 @@ function updatePhrase() {
         showToast('Historial borrado');
       }
     });
-    
+
     function guardarFrase() {
         const frase = phraseInput.value.trim();
         if (!frase) return;
 
         let historial = JSON.parse(localStorage.getItem("toki_historial")) || [];
-        
+
         historial = historial.filter(f => f !== frase);
-        
+
         historial.unshift(frase);
-        
+
         if (historial.length > 15) historial = historial.slice(0, 15);
 
         localStorage.setItem("toki_historial", JSON.stringify(historial));
@@ -491,7 +594,7 @@ function updatePhrase() {
         renderHistorial();
         showToast("✓ Frase guardada");
     }
-    
+
     function renderHistorial() {
         const cont = document.getElementById("historial");
         const historial = JSON.parse(localStorage.getItem("toki_historial")) || [];
@@ -501,17 +604,17 @@ function updatePhrase() {
             return;
         }
 
-        cont.innerHTML = historial.map(f => 
+        cont.innerHTML = historial.map(f =>
             `<div class="historial-item" onclick="colocarFrase('${f.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">
                 ${f}
             </div>`
         ).join('');
     }
-    
+
     function colocarFrase(texto) {
         phraseInput.value = texto;
     }
-    
+
     function showToast(msg) {
         const t = document.createElement("div");
         t.className = "toast";

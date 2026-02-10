@@ -16,16 +16,22 @@
       <div class="layout">
         <aside class="sidebar">
           <div class="panel">
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="🔍 Buscar pictograma..." aria-label="Buscar pictograma">
+            </div>
+            <div id="category-filters" class="category-filters"></div>
             <div id="gallery" class="gallery" aria-label="Pictogramas disponibles"></div>
           </div>
         </aside>
         <div class="main">
-          <div class="panel">
+          <div class="panel" style="position: relative;">
+            <button id="clear-builder" class="clear-builder" title="Limpiar todo">🗑️</button>
             <div id="builder" class="builder" aria-label="Construir frase aquí"></div>
           </div>
           <div class="bar">
             <input id="phrase" class="phrase" type="text" placeholder="La frase aparecerá aquí" readonly />
-            <button id="send" class="send" title="Guardar en historial" aria-label="Guardar">💾</button>
+            <button id="speak" class="action-btn speak" title="Escuchar frase">🔊</button>
+            <button id="send" class="action-btn send" title="Guardar en historial">💾</button>
           </div>
           <div class="history-container">
             <div class="history-header">
