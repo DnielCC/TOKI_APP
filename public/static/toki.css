@@ -304,64 +304,36 @@ body {
 .category-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px;
-  margin: 0 0 12px 0;
+  gap: 8px;
+  padding: 4px 16px 16px 16px;
   border-bottom: 1px solid #f0f0f0;
-  max-height: 120px;
-  overflow-y: auto;
-  align-content: flex-start;
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e0 #f1f5f9;
-  background: #f9fafc;
-  border-radius: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-
-.category-filters::-webkit-scrollbar {
-  width: 4px;
-}
-
-.category-filters::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0;
-  border-radius: 2px;
+  margin-bottom: 16px;
 }
 
 .filter-btn {
-  padding: 4px 10px;
-  border: 1px solid #e2e8f0;
+  padding: 6px 14px;
+  border: 2px solid #edf2f7;
   border-radius: 12px;
   background: #fff;
   color: #4a5568;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-  margin: 1px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  line-height: 1.2;
-  height: 26px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .filter-btn:hover {
-  background: #edf2f7;
+  background: #f7fafc;
+  border-color: #cbd5e0;
   transform: translateY(-1px);
 }
 
 .filter-btn.active {
-  background: #3b82f6;
-  color: white;
-  border-color: #3b82f6;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  background: var(--green);
+  color: #000;
+  border-color: var(--green);
+  box-shadow: 0 4px 6px rgba(153, 226, 161, 0.3);
 }
 
 .builder {
