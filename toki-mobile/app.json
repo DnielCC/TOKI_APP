@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "TOKI - Comunicación con Pictogramas",
+    "slug": "toki-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#fdeaa6"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#fdeaa6"
+      },
+      "package": "com.axelhm.tokimobile"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5346e292-1640-4bb7-ad8c-9903a5209091"
+      }
+    }
+  }
+}
